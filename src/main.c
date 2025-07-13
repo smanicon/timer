@@ -1,6 +1,10 @@
+#include "timer.h"
 #include "tm1638.h"
 #include "scheduler.h"
+#include <stdbool.h>
 #include <stdint.h>
+
+scheduler_t *scheduler;
 
 typedef struct {
   int counter;
@@ -10,15 +14,19 @@ typedef struct {
 typedef struct {
   uint8_t id_counter;
   int *counter;
-} counter_t;
+}
 
-void decrement_counter(int arg) {
+
+
+counter_t;
+
+void decrement_counter(void* arg) {
   counter_t *counter = (counter_t *)arg;
 
   if(*counter->counter) {
     (*counter->counter) --;
   } else {
-    scheduler_disable_task(counter->id_counter);
+    scheduler_disable_task(scheduler, counter->id_counter);
   }
 }
 
@@ -27,7 +35,7 @@ typedef struct {
   bool blink;
 } display_t;
 
-void display_counter(int arg) {
+void display_counter(void* arg) {
   display_t *display = (display_t *) arg;
 
   if(display->timer->run || ! display->blink) {
@@ -53,31 +61,33 @@ typedef struct {
   uint8_t id_counter;
 } input_t;
 
-void input_reader(int arg) {
+void input_reader(void* arg) {
   input_t *input = (input_t*) arg;
 
   if(TM_button_read()) {
     *input->run = true;
-    scheduler_enable_task(input->id_counter);
+    scheduler_enable_task(scheduler, input->id_counter);
   }
 }
 
+
 int main() {
   TM_init();
-  scheduler_init();
+  scheduler = scheduler_init(10);
 
   timer_t timer = {160, false};
 
   counter_t counter = {0, &timer.counter};
-  counter.id_counter = scheduler_add_task(decrement_counter, (int)&counter, 100);
-  scheduler_disable_task(counter.id_counter);
+  counter.id_counter = scheduler_add_task(scheduler, decrement_counter, &counter, 100);
+  scheduler_disable_task(scheduler, counter.id_counter);
 
   display_t display = {&timer, false};
-  scheduler_add_task(display_counter, (int) &display, 50);
+  scheduler_add_task(scheduler, display_counter, &display, 50);
 
   input_t input = {&timer.run, counter.id_counter};
-  scheduler_add_task(input_reader, (int) &input, 10);
+  scheduler_add_task(scheduler, input_reader, &input, 10);
 
-  scheduler_run();
+  TIMER_init(scheduler);
+  TIMER_loop();
   return 0;
 }

@@ -105,7 +105,7 @@ void should_run_task_when_it_is_reenabled() {
   scheduler_t *s = scheduler_init(1);
   int id = scheduler_add_task(s, task, &runner, 1);
   scheduler_disable_task(s, id);
-  scheduler_enabled_task(s, id);
+  scheduler_enable_task(s, id);
 
   scheduler_tick(s);
   scheduler_run_next_tasks(s);

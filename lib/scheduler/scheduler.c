@@ -69,7 +69,7 @@ void scheduler_disable_task(scheduler_t *s, uint8_t id) {
   t->enabled = false;
 }
 
-void scheduler_enabled_task(scheduler_t *s, uint8_t id) {
+void scheduler_enable_task(scheduler_t *s, uint8_t id) {
   task_t *t = &s->tasks[id];
   t->enabled = true;
 }
