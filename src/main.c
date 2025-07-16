@@ -14,11 +14,7 @@ typedef struct {
 typedef struct {
   uint8_t id_counter;
   int *counter;
-}
-
-
-
-counter_t;
+} counter_t;
 
 void decrement_counter(void* arg) {
   counter_t *counter = (counter_t *)arg;
