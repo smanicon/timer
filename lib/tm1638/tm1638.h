@@ -1,7 +1,12 @@
 #ifndef TM1638_H
 #define TM1638_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdint.h>
+
 typedef enum { OUTPUT, INPUT } pin_direction;
 
 typedef enum { HIGH, LOW } pin_value;
@@ -25,4 +30,9 @@ void TM_display_4_digit(TM1638_pin_t *pins, uint8_t d1, uint8_t d2, uint8_t d3,
                         uint8_t d4);
 void TM_display_on(TM1638_pin_t *);
 void TM_display_off(TM1638_pin_t *);
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif

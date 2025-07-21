@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(tm1638_timer_project C ASM)
+project(tm1638_timer_project)
 
 add_subdirectory(lib/scheduler)
 add_subdirectory(lib/tm1638)
